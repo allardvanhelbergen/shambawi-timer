@@ -46,3 +46,11 @@ PORT=8080 npm run dev
 ```sh
 npm test
 ```
+
+## GitHub Pages
+
+Pushes to `main` deploy automatically through GitHub Actions. The workflow tests the app, builds a minimal static artifact, and publishes it to GitHub Pages.
+
+[Open the published timer](https://allardvanhelbergen.github.io/shambawi-timer/)
+
+The deployment can also be started manually from **Actions > Deploy to GitHub Pages > Run workflow**.
