@@ -12,12 +12,10 @@ const totalDuration = getTotalDuration(timeline);
 const roundSegments = timeline.filter((segment) => segment.type === "round");
 
 const elements = {
-  announcementStrip: document.querySelector("#announcement-strip"),
   bellToggle: document.querySelector("#bell-toggle"),
   countReadout: document.querySelector("#count-readout"),
   currentTitle: document.querySelector("#current-title"),
   nextButton: document.querySelector("#next-button"),
-  nextRound: document.querySelector("#next-round"),
   playButton: document.querySelector("#play-button"),
   playIcon: document.querySelector("#play-icon"),
   previousButton: document.querySelector("#previous-button"),
@@ -42,7 +40,7 @@ const state = {
   cueTimer: 0,
 };
 
-elements.sessionMeta.textContent = `${formatClock(totalDuration)} total practice`;
+elements.sessionMeta.textContent = `Total ${formatClock(totalDuration)}`;
 
 renderRoundList();
 render();
@@ -59,16 +57,6 @@ elements.playButton.addEventListener("click", () => {
 elements.resetButton.addEventListener("click", resetTimer);
 elements.nextButton.addEventListener("click", () => moveToAdjacentRound(1));
 elements.previousButton.addEventListener("click", () => moveToAdjacentRound(-1));
-elements.bellToggle.addEventListener("change", () => {
-  elements.announcementStrip.textContent = elements.bellToggle.checked
-    ? "Bell enabled"
-    : "Bell muted";
-});
-elements.voiceToggle.addEventListener("change", () => {
-  elements.announcementStrip.textContent = elements.voiceToggle.checked
-    ? "Voice enabled"
-    : "Voice muted";
-});
 
 function startTimer() {
   state.isRunning = true;
@@ -92,7 +80,6 @@ function resetTimer() {
   state.isRunning = false;
   state.previousSegment = null;
   state.lastSegmentKey = "";
-  elements.announcementStrip.textContent = "Ready to begin";
   render();
 }
 
@@ -147,7 +134,6 @@ function maybeCueSegment(currentSegment) {
 
 function playCue(cue) {
   clearTimeout(state.cueTimer);
-  elements.announcementStrip.textContent = cue.announcement;
 
   if (cue.bell) {
     playBell();
@@ -160,7 +146,6 @@ function playCue(cue) {
 
 function completePractice() {
   clearTimeout(state.cueTimer);
-  elements.announcementStrip.textContent = "Practice complete";
   playBell();
   state.cueTimer = window.setTimeout(() => speak("Practice complete"), 650);
 }
@@ -259,7 +244,6 @@ function setElapsed(seconds, shouldCue) {
 function render() {
   const segment = getSegmentAt(timeline, state.elapsedSeconds);
   const currentRound = resolveCurrentRound(segment);
-  const nextRound = resolveNextRound(segment);
   const remaining = Math.ceil(segment?.remainingInSegment ?? 0);
   const segmentProgress = segment?.progress ?? 0;
   const sessionProgress = totalDuration
@@ -270,7 +254,6 @@ function render() {
   elements.roundKicker.textContent = getKicker(segment, currentRound);
   elements.timeReadout.textContent = formatClock(remaining);
   elements.countReadout.textContent = getCountReadout(segment);
-  elements.nextRound.textContent = nextRound?.name ?? "Complete";
   elements.timerRing.style.setProperty(
     "--segment-progress",
     `${segmentProgress * 360}deg`,
@@ -371,7 +354,7 @@ function getCountReadout(segment) {
     return `Repetition ${segment.repetition}/${segment.repetitions}`;
   }
 
-  return "Timed round";
+  return "";
 }
 
 function getRoundMeta(round) {
@@ -399,20 +382,6 @@ function resolveCurrentRound(segment) {
   }
 
   return segment;
-}
-
-function resolveNextRound(segment) {
-  if (!segment) {
-    return null;
-  }
-
-  if (segment.type === "transition") {
-    return roundSegments.find((round) => round.name === segment.nextRoundName);
-  }
-
-  return (
-    roundSegments.find((round) => round.number === segment.number + 1) ?? null
-  );
 }
 
 function getSegmentKey(segment) {

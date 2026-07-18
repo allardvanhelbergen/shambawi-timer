@@ -9,7 +9,6 @@
   --sage: #3d735d;
   --sage-deep: #244f41;
   --copper: #b56b3f;
-  --copper-soft: #f3ded1;
   --shadow: 0 20px 60px rgba(28, 40, 32, 0.12);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -75,12 +74,6 @@ h1 {
   letter-spacing: 0;
 }
 
-.session-meta {
-  margin-top: 7px;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
 .toggles {
   display: flex;
   align-items: center;
@@ -114,18 +107,34 @@ h1 {
 }
 
 .rounds-panel {
-  padding: 20px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fbfcfa;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
-.rounds-panel h2 {
-  margin-bottom: 16px;
+.rounds-header {
+  min-height: 38px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding: 0 12px;
+}
+
+.rounds-header h2 {
   font-size: 0.92rem;
   font-weight: 700;
   color: var(--muted);
   text-transform: uppercase;
+}
+
+.rounds-total {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .round-list {
@@ -207,34 +216,15 @@ h1 {
 
 .focus-panel {
   display: grid;
-  grid-template-rows: auto 1fr auto auto auto;
+  grid-template-rows: 1fr auto auto;
   align-items: center;
   justify-items: center;
-  gap: 22px;
+  gap: 24px;
   min-width: 0;
-  padding: 26px;
-  border-radius: 8px;
-  background:
-    radial-gradient(circle at 50% 38%, rgba(61, 115, 93, 0.1), transparent 38%),
-    #fbfcfa;
-  border: 1px solid var(--line);
-}
-
-.announcement-strip {
-  width: 100%;
-  max-width: 520px;
-  min-width: 0;
-  min-height: 44px;
-  display: grid;
-  place-items: center;
-  padding: 10px 16px;
-  border: 1px solid #e0c5b5;
-  border-radius: 8px;
-  background: var(--copper-soft);
-  color: #65361f;
-  font-size: 0.94rem;
-  font-weight: 700;
-  text-align: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .timer-ring {
@@ -293,24 +283,6 @@ h1 {
   color: var(--muted);
   font-size: 1rem;
   font-weight: 700;
-}
-
-.next-row {
-  width: 100%;
-  max-width: 520px;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.next-row strong {
-  color: var(--text);
-  font-size: 1rem;
-  text-align: right;
 }
 
 .progress-track {
@@ -391,8 +363,7 @@ h1 {
     padding: 18px;
   }
 
-  .topbar,
-  .next-row {
+  .topbar {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -408,7 +379,7 @@ h1 {
 
   .focus-panel {
     min-height: 560px;
-    padding: 18px;
+    padding: 0;
   }
 
   .timer-ring {

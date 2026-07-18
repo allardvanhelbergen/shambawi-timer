@@ -11,10 +11,7 @@
     <main class="app-shell">
       <section class="timer-panel" aria-labelledby="app-title">
         <header class="topbar">
-          <div>
-            <h1 id="app-title">Shambawi timer</h1>
-            <p class="session-meta" id="session-meta">Structured practice</p>
-          </div>
+          <h1 id="app-title">Shambawi timer</h1>
           <div class="toggles" aria-label="Sound settings">
             <label class="toggle">
               <input id="bell-toggle" type="checkbox" checked />
@@ -29,27 +26,21 @@
 
         <div class="main-grid">
           <aside class="rounds-panel" aria-labelledby="rounds-title">
-            <h2 id="rounds-title">Rounds</h2>
+            <div class="rounds-header">
+              <h2 id="rounds-title">Rounds</h2>
+              <p class="rounds-total" id="session-meta">Total 32:38</p>
+            </div>
             <ol class="round-list" id="round-list"></ol>
           </aside>
 
           <section class="focus-panel" aria-live="polite">
-            <div class="announcement-strip" id="announcement-strip">
-              Ready to begin
-            </div>
-
             <div class="timer-ring" id="timer-ring">
               <div class="timer-core">
                 <span class="round-kicker" id="round-kicker">Round 1</span>
                 <h2 id="current-title">Butterfly</h2>
                 <p class="time-readout" id="time-readout">2:00</p>
-                <p class="count-readout" id="count-readout">Timed round</p>
+                <p class="count-readout" id="count-readout"></p>
               </div>
-            </div>
-
-            <div class="next-row">
-              <span>Next</span>
-              <strong id="next-round">Rock the baby</strong>
             </div>
 
             <div class="progress-track" aria-label="Session progress">
