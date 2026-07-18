@@ -10,7 +10,7 @@ test("start cue announces the first round", () => {
 
   assert.deepEqual(cue, {
     bell: true,
-    announcement: "Begin Butterfly",
+    announcement: "Butterfly",
   });
 });
 
@@ -29,13 +29,13 @@ test("immediate round boundary cues the next exercise when no transition exists"
   const alternateNostril = timeline.find(
     (segment) => segment.name === "Alternate nostril breathing",
   );
-  const auhm = timeline.find((segment) => segment.name === "Auhm");
+  const auhm = timeline.find((segment) => segment.name === "Auhm chanting");
 
   const cue = getSegmentCue(alternateNostril, auhm);
 
   assert.deepEqual(cue, {
     bell: true,
-    announcement: "Next: Auhm",
+    announcement: "Next: Auhm chanting",
   });
 });
 

@@ -26,7 +26,7 @@ export const PRACTICE_PLAN = [
   },
   {
     number: 5,
-    name: "Auhm",
+    name: "Auhm chanting",
     totalSeconds: 21 * 8,
     repetitions: 21,
     stepSeconds: 8,

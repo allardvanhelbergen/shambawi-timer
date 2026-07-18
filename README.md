@@ -12,7 +12,7 @@ A browser-based meditation timer for a structured seven-round Shambawi practice.
 | 2 | Rock the baby | 2 minutes, then a 10-second transition |
 | 3 | Cat stretch | 3 repetitions of 10 steps, 5 seconds per step |
 | 4 | Alternate nostril breathing | 7 minutes |
-| 5 | Auhm | 21 repetitions, 8 seconds each |
+| 5 | Auhm chanting | 21 repetitions, 8 seconds each |
 | 6 | Fluttering of the breath | 4 minutes |
 | 7 | Locks and equalising | 12 minutes |
 

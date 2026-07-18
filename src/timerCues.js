@@ -4,7 +4,7 @@ export function getSegmentCue(previousSegment, currentSegment) {
   }
 
   if (!previousSegment && currentSegment.type === "round") {
-    return buildCue(`Begin ${currentSegment.name}`);
+    return buildCue(`${currentSegment.name}`);
   }
 
   if (currentSegment.type === "transition") {

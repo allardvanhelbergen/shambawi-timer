@@ -36,7 +36,12 @@ test("practice plan contains the requested seven rounds in order", () => {
         totalSeconds: 420,
         transitionSeconds: 0,
       },
-      { number: 5, name: "Auhm", totalSeconds: 168, transitionSeconds: 0 },
+      {
+        number: 5,
+        name: "Auhm chanting",
+        totalSeconds: 168,
+        transitionSeconds: 0,
+      },
       {
         number: 6,
         name: "Fluttering of the breath",
@@ -55,7 +60,7 @@ test("practice plan contains the requested seven rounds in order", () => {
 
 test("counting rounds expose repetition and step metadata", () => {
   const catStretch = PRACTICE_PLAN.find((round) => round.name === "Cat stretch");
-  const auhm = PRACTICE_PLAN.find((round) => round.name === "Auhm");
+  const auhm = PRACTICE_PLAN.find((round) => round.name === "Auhm chanting");
 
   assert.equal(catStretch.repetitions, 3);
   assert.equal(catStretch.stepsPerRepetition, 10);
