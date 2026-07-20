@@ -5,6 +5,12 @@ import {
   getSegmentAt,
   getTotalDuration,
 } from "./practicePlan.js";
+import {
+  SESSION_EVENTS,
+  SESSION_PHASES,
+  createSessionState,
+  transitionSession,
+} from "./sessionState.js";
 import { getSegmentCue } from "./timerCues.js";
 
 const timeline = buildPracticeTimeline(PRACTICE_PLAN);
@@ -13,11 +19,15 @@ const roundSegments = timeline.filter((segment) => segment.type === "round");
 
 const elements = {
   bellToggle: document.querySelector("#bell-toggle"),
+  completedTitle: document.querySelector("#completed-title"),
+  completedView: document.querySelector("#completed-view"),
   countReadout: document.querySelector("#count-readout"),
   currentTitle: document.querySelector("#current-title"),
   nextButton: document.querySelector("#next-button"),
   playButton: document.querySelector("#play-button"),
   playIcon: document.querySelector("#play-icon"),
+  practiceAgainButton: document.querySelector("#practice-again-button"),
+  practiceView: document.querySelector("#practice-view"),
   previousButton: document.querySelector("#previous-button"),
   resetButton: document.querySelector("#reset-button"),
   roundKicker: document.querySelector("#round-kicker"),
@@ -27,23 +37,33 @@ const elements = {
   timeReadout: document.querySelector("#time-readout"),
   timerRing: document.querySelector("#timer-ring"),
   voiceToggle: document.querySelector("#voice-toggle"),
+  startPracticeButton: document.querySelector("#start-practice-button"),
+  welcomeTitle: document.querySelector("#welcome-title"),
+  welcomeView: document.querySelector("#welcome-view"),
 };
 
 const state = {
-  elapsedSeconds: 0,
-  isRunning: false,
+  ...createSessionState(),
   runStartedAt: 0,
   runBaseElapsed: 0,
   previousSegment: null,
   lastSegmentKey: "",
   audioContext: null,
   cueTimer: 0,
+  animationFrameId: 0,
 };
 
 elements.sessionMeta.textContent = `Total ${formatClock(totalDuration)}`;
 
 renderRoundList();
-render();
+renderPhase();
+
+elements.startPracticeButton.addEventListener("click", () => {
+  startPractice(SESSION_EVENTS.START);
+});
+elements.practiceAgainButton.addEventListener("click", () => {
+  startPractice(SESSION_EVENTS.PRACTICE_AGAIN);
+});
 
 elements.playButton.addEventListener("click", () => {
   if (state.isRunning) {
@@ -54,37 +74,88 @@ elements.playButton.addEventListener("click", () => {
   startTimer();
 });
 
-elements.resetButton.addEventListener("click", resetTimer);
+elements.resetButton.addEventListener("click", resetPractice);
 elements.nextButton.addEventListener("click", () => moveToAdjacentRound(1));
 elements.previousButton.addEventListener("click", () => moveToAdjacentRound(-1));
 
+function startPractice(event) {
+  if (!applySessionTransition(event)) {
+    return;
+  }
+
+  stopAnimationLoop();
+  clearPendingCues();
+  resetTimingBookkeeping();
+  state.runStartedAt = performance.now();
+  unlockAudio();
+  maybeCueSegment(getSegmentAt(timeline, state.elapsedSeconds));
+  renderPhase(true);
+  scheduleTick();
+}
+
 function startTimer() {
+  if (state.phase !== SESSION_PHASES.PRACTICE || state.isRunning) {
+    return;
+  }
+
   state.isRunning = true;
   state.runStartedAt = performance.now();
   state.runBaseElapsed = state.elapsedSeconds;
   unlockAudio();
-  requestAnimationFrame(tick);
+  scheduleTick();
   render();
 }
 
 function pauseTimer() {
+  if (!state.isRunning) {
+    return;
+  }
+
   state.elapsedSeconds = getLiveElapsed();
   state.isRunning = false;
+  stopAnimationLoop();
   render();
 }
 
-function resetTimer() {
-  clearTimeout(state.cueTimer);
-  window.speechSynthesis?.cancel();
+function resetPractice() {
+  if (!applySessionTransition(SESSION_EVENTS.RESET)) {
+    return;
+  }
+
+  stopAnimationLoop();
+  clearPendingCues();
+  resetTimingBookkeeping();
+  renderPhase(true);
+}
+
+function applySessionTransition(event) {
+  const currentSession = {
+    phase: state.phase,
+    elapsedSeconds: state.elapsedSeconds,
+    isRunning: state.isRunning,
+  };
+  const nextSession = transitionSession(currentSession, event);
+
+  if (nextSession === currentSession) {
+    return false;
+  }
+
+  Object.assign(state, nextSession);
+  return true;
+}
+
+function resetTimingBookkeeping() {
   state.elapsedSeconds = 0;
-  state.isRunning = false;
+  state.runStartedAt = 0;
+  state.runBaseElapsed = 0;
   state.previousSegment = null;
   state.lastSegmentKey = "";
-  render();
 }
 
 function tick() {
-  if (!state.isRunning) {
+  state.animationFrameId = 0;
+
+  if (!state.isRunning || state.phase !== SESSION_PHASES.PRACTICE) {
     return;
   }
 
@@ -94,14 +165,29 @@ function tick() {
 
   if (state.elapsedSeconds >= totalDuration) {
     state.elapsedSeconds = totalDuration;
-    state.isRunning = false;
     completePractice();
-    render();
     return;
   }
 
   render();
-  requestAnimationFrame(tick);
+  scheduleTick();
+}
+
+function scheduleTick() {
+  if (state.animationFrameId || !state.isRunning) {
+    return;
+  }
+
+  state.animationFrameId = requestAnimationFrame(tick);
+}
+
+function stopAnimationLoop() {
+  if (!state.animationFrameId) {
+    return;
+  }
+
+  cancelAnimationFrame(state.animationFrameId);
+  state.animationFrameId = 0;
 }
 
 function getLiveElapsed() {
@@ -145,9 +231,20 @@ function playCue(cue) {
 }
 
 function completePractice() {
+  if (!applySessionTransition(SESSION_EVENTS.COMPLETE)) {
+    return;
+  }
+
   clearTimeout(state.cueTimer);
   playBell();
   state.cueTimer = window.setTimeout(() => speak("Practice complete"), 650);
+  renderPhase(true);
+}
+
+function clearPendingCues() {
+  clearTimeout(state.cueTimer);
+  state.cueTimer = 0;
+  window.speechSynthesis?.cancel();
 }
 
 function playBell() {
@@ -239,6 +336,32 @@ function setElapsed(seconds, shouldCue) {
   }
 
   render();
+}
+
+function renderPhase(shouldFocus = false) {
+  const isWelcome = state.phase === SESSION_PHASES.WELCOME;
+  const isPractice = state.phase === SESSION_PHASES.PRACTICE;
+  const isCompleted = state.phase === SESSION_PHASES.COMPLETED;
+
+  document.body.dataset.phase = state.phase;
+  elements.welcomeView.hidden = !isWelcome;
+  elements.practiceView.hidden = !isPractice;
+  elements.completedView.hidden = !isCompleted;
+
+  if (isPractice) {
+    render();
+  }
+
+  if (!shouldFocus) {
+    return;
+  }
+
+  const heading = isWelcome
+    ? elements.welcomeTitle
+    : isCompleted
+      ? elements.completedTitle
+      : elements.currentTitle;
+  heading?.focus({ preventScroll: true });
 }
 
 function render() {

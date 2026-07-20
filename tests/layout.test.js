@@ -14,6 +14,66 @@ function getCssRule(selector) {
   return styles.match(new RegExp(`${escapedSelector}\\s*\\{([^}]*)\\}`))?.[1] ?? "";
 }
 
+function getMarkupBetween(startId, endId) {
+  const start = html.indexOf(`id="${startId}"`);
+  const end = endId ? html.indexOf(`id="${endId}"`) : html.length;
+
+  return start >= 0 && end > start ? html.slice(start, end) : "";
+}
+
+test("welcome, practice, and completed views are explicit siblings", () => {
+  assert.match(
+    html,
+    /<section[^>]*id="welcome-view"[\s\S]*<section[^>]*id="practice-view"[^>]*hidden[\s\S]*<section[^>]*id="completed-view"[^>]*hidden/,
+  );
+  assert.doesNotMatch(
+    html.match(/<section[^>]*id="welcome-view"[^>]*>/)?.[0] ?? "",
+    /hidden/,
+  );
+});
+
+test("ceremony views expose only their heading and primary action", () => {
+  const welcome = getMarkupBetween("welcome-view", "practice-view");
+  const completed = getMarkupBetween("completed-view");
+
+  assert.match(welcome, /id="welcome-title"[^>]*tabindex="-1"[^>]*>Start Shambawi/);
+  assert.match(
+    welcome,
+    /id="start-practice-button"[^>]*aria-label="Start Shambawi"/,
+  );
+  assert.match(
+    completed,
+    /id="completed-title"[^>]*tabindex="-1"[^>]*>Shambawi completed/,
+  );
+  assert.match(completed, /id="practice-again-button"[^>]*>Practice again/);
+
+  for (const ceremony of [welcome, completed]) {
+    assert.doesNotMatch(ceremony, /bell-toggle|voice-toggle|round-list|timer-ring/);
+  }
+});
+
+test("phase rendering owns view visibility and one-click practice entry", () => {
+  assert.match(appSource, /from "\.\/sessionState\.js"/);
+  assert.match(appSource, /function startPractice\(event\)/);
+  assert.match(appSource, /function completePractice\(\)/);
+  assert.match(appSource, /function resetPractice\(\)/);
+  assert.match(appSource, /function renderPhase\(shouldFocus = false\)/);
+  assert.match(appSource, /document\.body\.dataset\.phase = state\.phase/);
+  assert.match(appSource, /elements\.welcomeView\.hidden =/);
+  assert.match(appSource, /elements\.practiceView\.hidden =/);
+  assert.match(appSource, /elements\.completedView\.hidden =/);
+  assert.match(
+    appSource,
+    /startPractice\(SESSION_EVENTS\.START\)/,
+  );
+  assert.match(
+    appSource,
+    /startPractice\(SESSION_EVENTS\.PRACTICE_AGAIN\)/,
+  );
+  assert.match(appSource, /animationFrameId/);
+  assert.match(appSource, /cancelAnimationFrame/);
+});
+
 test("round list and timer workspace are unframed", () => {
   const roundsPanel = getCssRule(".rounds-panel");
   const focusPanel = getCssRule(".focus-panel");

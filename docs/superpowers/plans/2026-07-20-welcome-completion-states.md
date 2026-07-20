@@ -95,7 +95,7 @@ git commit -m "Add session phase state machine"
 - Modify: `src/app.js`
 - Modify: `tests/layout.test.js`
 
-- [ ] **Step 1: Add failing markup and source-contract tests**
+- [x] **Step 1: Add failing markup and source-contract tests**
 
 Extend `tests/layout.test.js` to assert:
 
@@ -107,13 +107,13 @@ Extend `tests/layout.test.js` to assert:
 - `app.js` imports the session state machine and has explicit `startPractice`, `completePractice`, `resetPractice`, and `renderPhase` paths.
 - `renderPhase()` sets body phase data and synchronizes native `hidden` attributes.
 
-- [ ] **Step 2: Run the layout test and confirm the expected failure**
+- [x] **Step 2: Run the layout test and confirm the expected failure**
 
 Run: `node --test tests/layout.test.js`
 
 Expected: FAIL because the ceremony views and phase wiring do not exist.
 
-- [ ] **Step 3: Add semantic sibling views**
+- [x] **Step 3: Add semantic sibling views**
 
 In `index.html`:
 
@@ -123,7 +123,7 @@ In `index.html`:
 - Use a labelled circular play button on welcome and a text button on completed.
 - Keep decorative illustration containers `aria-hidden="true"`; do not embed UI text in artwork.
 
-- [ ] **Step 4: Integrate phase state with timer side effects**
+- [x] **Step 4: Integrate phase state with timer side effects**
 
 In `src/app.js`:
 
@@ -136,19 +136,19 @@ In `src/app.js`:
 - `renderPhase()` toggles `hidden`, sets `document.body.dataset.phase`, and only calls the existing timer rendering path while practice is active.
 - Preserve Bell and Voice checkbox values during phase changes.
 
-- [ ] **Step 5: Run the focused tests**
+- [x] **Step 5: Run the focused tests**
 
 Run: `node --test tests/sessionState.test.js tests/layout.test.js`
 
 Expected: PASS.
 
-- [ ] **Step 6: Run the full suite**
+- [x] **Step 6: Run the full suite**
 
 Run: `npm test`
 
 Expected: all tests pass with no practice-plan or cue regressions.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```sh
 git add index.html src/app.js tests/layout.test.js

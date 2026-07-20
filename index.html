@@ -7,9 +7,21 @@
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./src/styles.css" />
   </head>
-  <body>
+  <body data-phase="welcome">
     <main class="app-shell">
-      <section class="timer-panel" aria-labelledby="app-title">
+      <section class="ceremony-view welcome-view" id="welcome-view" aria-labelledby="welcome-title">
+        <div class="ceremony-content">
+          <h1 id="welcome-title" tabindex="-1">Start Shambawi</h1>
+          <button class="ceremony-start-button" id="start-practice-button" type="button" aria-label="Start Shambawi">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5v14l11-7L8 5Z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="ceremony-scene" aria-hidden="true"></div>
+      </section>
+
+      <section class="timer-panel" id="practice-view" aria-labelledby="app-title" hidden>
         <header class="topbar">
           <h1 id="app-title">Shambawi timer</h1>
           <div class="toggles" aria-label="Sound settings">
@@ -37,7 +49,7 @@
             <div class="timer-ring" id="timer-ring">
               <div class="timer-core">
                 <span class="round-kicker" id="round-kicker">Round 1</span>
-                <h2 id="current-title">Butterfly</h2>
+                <h2 id="current-title" tabindex="-1">Butterfly</h2>
                 <p class="time-readout" id="time-readout">2:00</p>
                 <p class="count-readout" id="count-readout"></p>
               </div>
@@ -74,6 +86,14 @@
             </div>
           </section>
         </div>
+      </section>
+
+      <section class="ceremony-view completed-view" id="completed-view" aria-labelledby="completed-title" hidden>
+        <div class="ceremony-content">
+          <h1 id="completed-title" tabindex="-1">Shambawi completed</h1>
+          <button class="practice-again-button" id="practice-again-button" type="button">Practice again</button>
+        </div>
+        <div class="ceremony-scene" aria-hidden="true"></div>
       </section>
     </main>
 
