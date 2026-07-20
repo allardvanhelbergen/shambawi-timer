@@ -51,7 +51,7 @@ The application has three explicit phases:
 
 | Current phase | Event | Next phase | Result |
 | --- | --- | --- | --- |
-| `welcome` | Start | `practice` | Reset timing state, unlock audio, begin round 1, and run the existing first-segment cue behavior. |
+| `welcome` | Start | `practice` | Reset timing state, set the timer to running, unlock audio, begin the round 1 countdown, and run the existing first-segment cue behavior. |
 | `practice` | Practice reaches total duration | `completed` | Stop animation frames, play the existing completion bell and voice cue, and show the completed phase. |
 | `practice` | Reset | `welcome` | Stop timing, cancel pending speech/cues, reset elapsed time and segment bookkeeping, and show the welcome phase. |
 | `completed` | Practice again | `practice` | Cancel the pending completion cue or speech, reset timing state, and immediately begin round 1 from the user gesture. |
@@ -64,7 +64,7 @@ Repeated or stale events that do not match the current phase have no effect. Thi
 - Centred heading: `Start Shambawi`.
 - One circular forest-green button with a familiar play icon and accessible name `Start Shambawi`.
 - No application title bar, round list, timer, progress, Bell toggle, Voice toggle, or supporting text is visible or keyboard-focusable.
-- Activating the button enters `practice` and starts immediately. It is not an intermediate continue step.
+- Activating the button enters `practice` and starts the timer immediately. The same click must set the timer to running, begin the countdown and first-round cue, and render the practice play control as `Pause`. It must not merely reveal the timer or require a second Play click.
 
 ## Completed Phase
 
@@ -171,7 +171,7 @@ The current timeline, cue generation, round list rendering, and timer calculatio
 ### Automated
 
 - Add tests for the initial `welcome` phase and valid phase transitions.
-- Verify Start enters `practice`, completion enters `completed`, Reset enters `welcome`, and Practice again enters `practice` with elapsed time reset.
+- Verify Start enters `practice` with the timer running and the practice play control in its Pause state; completion enters `completed`, Reset enters `welcome`, and Practice again enters `practice` with elapsed time reset.
 - Verify repeated Start or Practice again events do not create duplicate running loops.
 - Extend layout tests to confirm all three views exist, inactive views use `hidden`, and ceremony views omit timer/settings content.
 - Verify ceremony CSS uses one-viewport containment, reduced-motion handling, fixed responsive type steps, and minimum control sizes.
@@ -179,7 +179,7 @@ The current timeline, cue generation, round list rendering, and timer calculatio
 
 ### Browser QA
 
-- Welcome -> practice starts round 1, produces no duplicate cue, and exposes all current timer controls.
+- One Start click from welcome opens practice with round 1 already counting down, the play control showing Pause, and no duplicate cue.
 - Reset from practice returns to welcome and cancels active audio/speech.
 - Natural completion shows `Shambawi completed` while the existing completion bell and announcement still run.
 - Practice again starts a fresh round 1 immediately.
@@ -191,7 +191,7 @@ The current timeline, cue generation, round list rendering, and timer calculatio
 ## Acceptance Criteria
 
 - Page load shows only the Still Water welcome phase.
-- Start immediately begins the unchanged practice flow.
+- A single Start click immediately begins the unchanged practice flow; no second Play click is required.
 - Natural completion shows only the Still Water completed phase and its one action.
 - Practice again immediately starts a fresh practice.
 - Reset returns to welcome.
