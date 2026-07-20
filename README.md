@@ -2,7 +2,7 @@
 
 A browser-based meditation timer for a structured seven-round Shambawi practice. It combines timed exercises, counted repetitions, transition bells, and spoken announcements in a responsive interface.
 
-![Shambawi Timer showing the seven-round practice and Butterfly countdown](docs/shambawi-timer.png)
+![Shambawi Timer Still Water welcome screen](docs/shambawi-timer.png)
 
 ## Practice
 
@@ -18,6 +18,7 @@ A browser-based meditation timer for a structured seven-round Shambawi practice.
 
 ## Features
 
+- Dedicated welcome and completion states with one-click start and restart
 - Bell and spoken exercise announcements between rounds
 - Repetition and step counting for structured exercises
 - Previous, next, pause, resume, and reset controls

@@ -238,7 +238,7 @@ git commit -m "Style Still Water ceremony states"
 - Modify: `docs/shambawi-timer.png`
 - Modify: `README.md` only if the screenshot alt text or feature list becomes inaccurate
 
-- [ ] **Step 1: Run automated verification**
+- [x] **Step 1: Run automated verification**
 
 Run: `npm test`
 
@@ -248,11 +248,11 @@ Run: `npm run build:pages`
 
 Expected: `_site` is rebuilt successfully and includes `src/sessionState.js` and `assets/still-water-ripples.png`.
 
-- [ ] **Step 2: Start and verify the local app**
+- [x] **Step 2: Start and verify the local app**
 
 Run the app on the first available localhost port starting at `4173`, then verify HTTP 200 and expected welcome markup before opening it in the in-app Browser.
 
-- [ ] **Step 3: Verify welcome and one-click start in Browser**
+- [x] **Step 3: Verify welcome and one-click start in Browser**
 
 At desktop, `390x844`, and `360x800`:
 
@@ -263,7 +263,7 @@ At desktop, `390x844`, and `360x800`:
 - Reset returns directly to welcome.
 - A rapid second activation cannot start a duplicate loop.
 
-- [ ] **Step 4: Verify practice regression behavior**
+- [x] **Step 4: Verify practice regression behavior**
 
 - Seven rounds still render in the approved mobile-before-timer order.
 - Play/pause, previous, next, reset, Bell, and Voice remain visible and usable.
@@ -271,15 +271,15 @@ At desktop, `390x844`, and `360x800`:
 - Relative CSS, module, leaves, and ripple URLs all return HTTP 200.
 - Browser console contains no uncaught errors or failed asset requests.
 
-- [ ] **Step 5: Compare implementation to approved references**
+- [x] **Step 5: Compare implementation to approved references**
 
 Capture desktop and mobile implementation screenshots, place each beside its matching approved reference, and inspect the combined comparisons for composition, spacing, waterline height, illustration crop, hierarchy, and palette. Correct material mismatches before continuing.
 
-- [ ] **Step 6: Refresh the repository screenshot**
+- [x] **Step 6: Refresh the repository screenshot**
 
 Capture the implemented desktop welcome state as `docs/shambawi-timer.png`. Keep README copy synchronized if its screenshot description or feature list is no longer accurate.
 
-- [ ] **Step 7: Re-run final verification**
+- [x] **Step 7: Re-run final verification**
 
 Run: `npm test && npm run build:pages`
 
@@ -289,13 +289,13 @@ Run: `git diff --check`
 
 Expected: no output.
 
-- [ ] **Step 8: Commit documentation changes**
+- [x] **Step 8: Commit documentation changes**
 
 ```sh
 git add docs/shambawi-timer.png README.md
 git commit -m "Update Shambawi welcome screenshot"
 ```
 
-- [ ] **Step 9: Report final status**
+- [x] **Step 9: Report final status**
 
 Stop any temporary preview server, leave the verified app server running for the user, and report the exact localhost URL, test/build results, commit ids, and `git status --short --branch`. Do not push unless explicitly requested.
