@@ -28,7 +28,7 @@
 - Create: `src/sessionState.js`
 - Create: `tests/sessionState.test.js`
 
-- [ ] **Step 1: Write failing transition tests**
+- [x] **Step 1: Write failing transition tests**
 
 Cover:
 
@@ -57,29 +57,29 @@ assert.equal(restarted.isRunning, true);
 
 Also assert Reset is valid only from practice and stale/repeated events return the original state object.
 
-- [ ] **Step 2: Run the focused test and confirm the expected failure**
+- [x] **Step 2: Run the focused test and confirm the expected failure**
 
 Run: `node --test tests/sessionState.test.js`
 
 Expected: FAIL because `src/sessionState.js` does not exist.
 
-- [ ] **Step 3: Implement the minimum state machine**
+- [x] **Step 3: Implement the minimum state machine**
 
 Export fixed `SESSION_PHASES`, fixed `SESSION_EVENTS`, `createSessionState()`, and `transitionSession(session, event)`. Valid transitions create a new state; invalid transitions return `session` unchanged.
 
-- [ ] **Step 4: Run the focused test**
+- [x] **Step 4: Run the focused test**
 
 Run: `node --test tests/sessionState.test.js`
 
 Expected: PASS.
 
-- [ ] **Step 5: Run the full suite**
+- [x] **Step 5: Run the full suite**
 
 Run: `npm test`
 
 Expected: all existing tests plus the new state tests pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```sh
 git add src/sessionState.js tests/sessionState.test.js
@@ -299,4 +299,3 @@ git commit -m "Update Shambawi welcome screenshot"
 - [ ] **Step 9: Report final status**
 
 Stop any temporary preview server, leave the verified app server running for the user, and report the exact localhost URL, test/build results, commit ids, and `git status --short --branch`. Do not push unless explicitly requested.
-
