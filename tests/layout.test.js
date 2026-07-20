@@ -74,11 +74,23 @@ test("phase rendering owns view visibility and one-click practice entry", () => 
   assert.match(appSource, /cancelAnimationFrame/);
 });
 
+test("practice entry guards against double-clicking through to timer controls", () => {
+  assert.match(appSource, /function armPracticeEntryGuard\(\)/);
+  assert.match(appSource, /is-entry-guarded/);
+  assert.match(
+    styles,
+    /\.timer-panel\.is-entry-guarded\s*\{[^}]*pointer-events:\s*none/s,
+  );
+});
+
 test("Still Water ceremony views use real artwork and one-viewport containment", () => {
   const ceremonyView = getCssRule(".ceremony-view");
 
   assert.match(styles, /url\(["']?\.\.\/assets\/still-water-ripples\.png["']?\)/);
-  assert.match(html, /class="ceremony-leaves"[^>]*src="\.\/assets\/leaves\.png"/);
+  assert.match(
+    html,
+    /class="ceremony-leaves"[^>]*src="\.\/assets\/leaves-transparent\.png"/,
+  );
   assert.match(html, /class="ceremony-ripples"[^>]*src="\.\/assets\/still-water-ripples\.png"/);
   assert.match(ceremonyView, /min-height:\s*100dvh/);
   assert.match(ceremonyView, /overflow:\s*hidden/);
@@ -165,7 +177,21 @@ test("outer app surface is unframed", () => {
 });
 
 test("generated botanical asset decorates the page", () => {
-  assert.match(styles, /url\(["']?\.\.\/assets\/leaves\.png["']?\)/);
+  assert.match(
+    styles,
+    /url\(["']?\.\.\/assets\/leaves-transparent\.png["']?\)/,
+  );
+  assert.match(
+    getCssRule(".ceremony-leaves"),
+    /filter:\s*saturate\(1\.6\) brightness\(0\.28\)/,
+  );
+});
+
+test("programmatically focused phase headings do not show pointer focus rings", () => {
+  assert.match(
+    styles,
+    /\[tabindex="-1"\]:focus\s*\{[^}]*outline:\s*none/s,
+  );
 });
 
 test("botanical branches point in the reversed direction", () => {
@@ -184,6 +210,10 @@ test("botanical branches point in the reversed direction", () => {
   assert.match(
     styles,
     /@media \(max-width:\s*700px\)[\s\S]*?body\[data-phase="practice"\]::after\s*\{[^}]*transform:\s*rotate\(354deg\)/,
+  );
+  assert.match(
+    styles,
+    /\.completed-view \.ceremony-leaves\s*\{[^}]*transform-origin:\s*center bottom/s,
   );
 });
 

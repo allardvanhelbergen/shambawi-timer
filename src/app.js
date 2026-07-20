@@ -51,6 +51,7 @@ const state = {
   audioContext: null,
   cueTimer: 0,
   animationFrameId: 0,
+  entryGuardTimer: 0,
 };
 
 elements.sessionMeta.textContent = `Total ${formatClock(totalDuration)}`;
@@ -89,8 +90,24 @@ function startPractice(event) {
   state.runStartedAt = performance.now();
   unlockAudio();
   maybeCueSegment(getSegmentAt(timeline, state.elapsedSeconds));
+  armPracticeEntryGuard();
   renderPhase(true);
   scheduleTick();
+}
+
+function armPracticeEntryGuard() {
+  clearTimeout(state.entryGuardTimer);
+  elements.practiceView.classList.add("is-entry-guarded");
+  state.entryGuardTimer = window.setTimeout(() => {
+    elements.practiceView.classList.remove("is-entry-guarded");
+    state.entryGuardTimer = 0;
+  }, 450);
+}
+
+function clearPracticeEntryGuard() {
+  clearTimeout(state.entryGuardTimer);
+  state.entryGuardTimer = 0;
+  elements.practiceView.classList.remove("is-entry-guarded");
 }
 
 function startTimer() {
@@ -124,6 +141,7 @@ function resetPractice() {
 
   stopAnimationLoop();
   clearPendingCues();
+  clearPracticeEntryGuard();
   resetTimingBookkeeping();
   renderPhase(true);
 }

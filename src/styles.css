@@ -47,7 +47,8 @@ body[data-phase="practice"]::after {
   width: 260px;
   aspect-ratio: 1;
   pointer-events: none;
-  background: url("../assets/leaves.png") center / contain no-repeat;
+  background: url("../assets/leaves-transparent.png") center / contain no-repeat;
+  filter: saturate(1.6) brightness(0.28);
   mix-blend-mode: multiply;
   opacity: 0.5;
 }
@@ -79,6 +80,10 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
 .app-shell {
   min-height: 100vh;
   position: relative;
@@ -96,6 +101,10 @@ input:focus-visible {
   border: 0;
   border-radius: 0;
   box-shadow: none;
+}
+
+.timer-panel.is-entry-guarded {
+  pointer-events: none;
 }
 
 .topbar {
@@ -155,7 +164,7 @@ body[data-phase="completed"] .app-shell {
   width: min(680px, calc(100% - 48px));
   position: absolute;
   z-index: 3;
-  top: 43%;
+  top: 47%;
   left: 50%;
   display: grid;
   justify-items: center;
@@ -219,7 +228,7 @@ body[data-phase="completed"] .app-shell {
 .ceremony-scene {
   position: absolute;
   z-index: 1;
-  top: 69%;
+  top: 71%;
   right: 0;
   bottom: 0;
   left: 0;
@@ -243,16 +252,17 @@ body[data-phase="completed"] .app-shell {
 }
 
 .ceremony-leaves {
-  width: clamp(300px, 31vw, 430px);
+  width: clamp(340px, 35vw, 430px);
   height: auto;
   position: absolute;
   z-index: 3;
   bottom: calc(100% - 2px);
-  left: -96px;
-  opacity: 0.72;
+  left: -32px;
+  opacity: 0.86;
+  filter: saturate(1.6) brightness(0.28);
+  mix-blend-mode: multiply;
   transform: rotate(358deg);
   transform-origin: bottom left;
-  mix-blend-mode: multiply;
 }
 
 .ceremony-reflection {
@@ -262,10 +272,10 @@ body[data-phase="completed"] .app-shell {
 }
 
 .completed-view .ceremony-leaves {
-  right: -96px;
+  right: -32px;
   left: auto;
   transform: scaleX(-1) rotate(358deg);
-  transform-origin: bottom right;
+  transform-origin: center bottom;
 }
 
 .completed-view .ceremony-reflection {
@@ -705,11 +715,11 @@ body[data-phase="completed"] .app-shell {
 
   .ceremony-leaves {
     width: 250px;
-    left: -100px;
+    left: -34px;
   }
 
   .completed-view .ceremony-leaves {
-    right: -100px;
+    right: -34px;
     left: auto;
   }
 
