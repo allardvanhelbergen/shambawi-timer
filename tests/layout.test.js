@@ -74,6 +74,47 @@ test("phase rendering owns view visibility and one-click practice entry", () => 
   assert.match(appSource, /cancelAnimationFrame/);
 });
 
+test("Still Water ceremony views use real artwork and one-viewport containment", () => {
+  const ceremonyView = getCssRule(".ceremony-view");
+
+  assert.match(styles, /url\(["']?\.\.\/assets\/still-water-ripples\.png["']?\)/);
+  assert.match(html, /class="ceremony-leaves"[^>]*src="\.\/assets\/leaves\.png"/);
+  assert.match(html, /class="ceremony-ripples"[^>]*src="\.\/assets\/still-water-ripples\.png"/);
+  assert.match(ceremonyView, /min-height:\s*100dvh/);
+  assert.match(ceremonyView, /overflow:\s*hidden/);
+  assert.match(styles, /\[hidden\]\s*\{[^}]*display:\s*none\s*!important/s);
+});
+
+test("ceremony typography and actions use fixed accessible sizes", () => {
+  const heading = getCssRule(".ceremony-content h1");
+  const startButton = getCssRule(".ceremony-start-button");
+  const againButton = getCssRule(".practice-again-button");
+
+  assert.match(heading, /font-size:\s*48px/);
+  assert.match(startButton, /width:\s*96px/);
+  assert.match(startButton, /height:\s*96px/);
+  assert.match(againButton, /min-height:\s*48px/);
+  assert.match(
+    styles,
+    /@media \(max-width:\s*700px\)[\s\S]*?\.ceremony-content h1\s*\{[^}]*font-size:\s*30px/,
+  );
+  assert.match(
+    styles,
+    /@media \(max-width:\s*700px\)[\s\S]*?\.ceremony-start-button\s*\{[^}]*width:\s*72px;[^}]*height:\s*72px/,
+  );
+});
+
+test("ceremony ripples animate once and respect reduced motion", () => {
+  const ripples = getCssRule(".ceremony-ripples");
+
+  assert.match(ripples, /animation:\s*ceremony-ripple-entry\s+2\.4s[^;]*\s1\s/);
+  assert.doesNotMatch(ripples, /infinite/);
+  assert.match(
+    styles,
+    /@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.ceremony-ripples\s*\{[^}]*animation:\s*none/,
+  );
+});
+
 test("round list and timer workspace are unframed", () => {
   const roundsPanel = getCssRule(".rounds-panel");
   const focusPanel = getCssRule(".focus-panel");
@@ -128,15 +169,21 @@ test("generated botanical asset decorates the page", () => {
 });
 
 test("botanical branches point in the reversed direction", () => {
-  assert.match(styles, /body::before\s*\{[^}]*transform:\s*rotate\(168deg\)/s);
-  assert.match(styles, /body::after\s*\{[^}]*transform:\s*rotate\(358deg\)/s);
   assert.match(
     styles,
-    /@media \(max-width:\s*700px\)[\s\S]*?body::before\s*\{[^}]*transform:\s*rotate\(162deg\)/,
+    /body\[data-phase="practice"\]::before\s*\{[^}]*transform:\s*rotate\(168deg\)/s,
   );
   assert.match(
     styles,
-    /@media \(max-width:\s*700px\)[\s\S]*?body::after\s*\{[^}]*transform:\s*rotate\(354deg\)/,
+    /body\[data-phase="practice"\]::after\s*\{[^}]*transform:\s*rotate\(358deg\)/s,
+  );
+  assert.match(
+    styles,
+    /@media \(max-width:\s*700px\)[\s\S]*?body\[data-phase="practice"\]::before\s*\{[^}]*transform:\s*rotate\(162deg\)/,
+  );
+  assert.match(
+    styles,
+    /@media \(max-width:\s*700px\)[\s\S]*?body\[data-phase="practice"\]::after\s*\{[^}]*transform:\s*rotate\(354deg\)/,
   );
 });
 

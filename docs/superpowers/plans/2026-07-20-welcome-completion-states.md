@@ -164,7 +164,7 @@ git commit -m "Add welcome and completion flows"
 - Modify: `src/styles.css`
 - Modify: `tests/layout.test.js`
 
-- [ ] **Step 1: Generate the production ripple bitmap**
+- [x] **Step 1: Generate the production ripple bitmap**
 
 Use the approved desktop and mobile references as composition input. Generate only the low waterline and restrained concentric ripples, without text, controls, leaves, symbols, or a full-page background. Use a removable flat chroma background if transparency is unavailable from generation, then remove it with the image-generation utility.
 
@@ -176,11 +176,11 @@ sips -g pixelWidth -g pixelHeight -g hasAlpha assets/still-water-ripples.png
 
 Expected: a production-resolution PNG with alpha and stable dimensions suitable for desktop and mobile scaling.
 
-- [ ] **Step 2: Inspect the bitmap**
+- [x] **Step 2: Inspect the bitmap**
 
 Verify transparent corners, no embedded text, palette-compatible green-grey/sage lines, and no accidental crop at the widest ripple.
 
-- [ ] **Step 3: Add failing visual-system contract tests**
+- [x] **Step 3: Add failing visual-system contract tests**
 
 Extend `tests/layout.test.js` to require:
 
@@ -192,13 +192,13 @@ Extend `tests/layout.test.js` to require:
 - A one-shot roughly `2.4s` ripple animation with no infinite iteration.
 - A `prefers-reduced-motion: reduce` rule that disables ceremony animation.
 
-- [ ] **Step 4: Run the layout test and confirm the expected failure**
+- [x] **Step 4: Run the layout test and confirm the expected failure**
 
 Run: `node --test tests/layout.test.js`
 
 Expected: FAIL on the missing ceremony styling contracts.
 
-- [ ] **Step 5: Implement the ceremony visual system**
+- [x] **Step 5: Implement the ceremony visual system**
 
 In `src/styles.css`:
 
@@ -213,7 +213,7 @@ In `src/styles.css`:
 - Use media-query type steps rather than viewport-sized text.
 - Ensure the entire ceremony fits `390x844`, `360x800`, and short viewports with no scroll.
 
-- [ ] **Step 6: Run the focused and full tests**
+- [x] **Step 6: Run the focused and full tests**
 
 Run: `node --test tests/layout.test.js`
 
@@ -223,7 +223,7 @@ Run: `npm test`
 
 Expected: all tests pass.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```sh
 git add assets/still-water-ripples.png src/styles.css tests/layout.test.js
