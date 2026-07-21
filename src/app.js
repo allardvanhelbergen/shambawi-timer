@@ -5,6 +5,8 @@ import {
   getSegmentAt,
   getTotalDuration,
 } from "./practicePlan.js";
+import { createRecordedVoicePlayer } from "./recordedVoice.js";
+import { playSingingBowl } from "./singingBowlSound.js";
 import {
   SESSION_EVENTS,
   SESSION_PHASES,
@@ -12,10 +14,12 @@ import {
   transitionSession,
 } from "./sessionState.js";
 import { getSegmentCue } from "./timerCues.js";
+import { findPreferredVoice } from "./voiceSelection.js";
 
 const timeline = buildPracticeTimeline(PRACTICE_PLAN);
 const totalDuration = getTotalDuration(timeline);
 const roundSegments = timeline.filter((segment) => segment.type === "round");
+const recordedVoicePlayer = createRecordedVoicePlayer();
 
 const elements = {
   bellToggle: document.querySelector("#bell-toggle"),
@@ -53,6 +57,23 @@ const state = {
   animationFrameId: 0,
   entryGuardTimer: 0,
 };
+
+let preferredVoice = null;
+
+function refreshPreferredVoice() {
+  if (!("speechSynthesis" in window)) {
+    preferredVoice = null;
+    return;
+  }
+
+  preferredVoice = findPreferredVoice(window.speechSynthesis.getVoices());
+}
+
+refreshPreferredVoice();
+window.speechSynthesis?.addEventListener(
+  "voiceschanged",
+  refreshPreferredVoice,
+);
 
 elements.sessionMeta.textContent = formatClock(totalDuration);
 
@@ -262,6 +283,7 @@ function completePractice() {
 function clearPendingCues() {
   clearTimeout(state.cueTimer);
   state.cueTimer = 0;
+  recordedVoicePlayer.cancel();
   window.speechSynthesis?.cancel();
 }
 
@@ -275,24 +297,7 @@ function playBell() {
     return;
   }
 
-  const now = context.currentTime;
-  const master = context.createGain();
-  master.gain.setValueAtTime(0.0001, now);
-  master.gain.exponentialRampToValueAtTime(0.38, now + 0.025);
-  master.gain.exponentialRampToValueAtTime(0.0001, now + 1.75);
-  master.connect(context.destination);
-
-  [528, 1056, 1584].forEach((frequency, index) => {
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = index === 0 ? "sine" : "triangle";
-    oscillator.frequency.setValueAtTime(frequency, now);
-    gain.gain.setValueAtTime(index === 0 ? 0.85 : 0.2, now);
-    oscillator.connect(gain);
-    gain.connect(master);
-    oscillator.start(now);
-    oscillator.stop(now + 1.8);
-  });
+  playSingingBowl(context);
 }
 
 function unlockAudio() {
@@ -312,13 +317,33 @@ function unlockAudio() {
   return state.audioContext;
 }
 
-function speak(text) {
+async function speak(text) {
+  if (!elements.voiceToggle.checked) {
+    return;
+  }
+
+  recordedVoicePlayer.cancel();
+  window.speechSynthesis?.cancel();
+  const context = unlockAudio();
+  const recordedResult = await recordedVoicePlayer.play(context, text);
+  if (recordedResult !== "unavailable") {
+    return;
+  }
+
+  speakWithBrowser(text);
+}
+
+function speakWithBrowser(text) {
   if (!elements.voiceToggle.checked || !("speechSynthesis" in window)) {
     return;
   }
 
-  window.speechSynthesis.cancel();
+  refreshPreferredVoice();
   const utterance = new SpeechSynthesisUtterance(text);
+  if (preferredVoice) {
+    utterance.voice = preferredVoice;
+    utterance.lang = preferredVoice.lang;
+  }
   utterance.rate = 0.86;
   utterance.pitch = 0.88;
   utterance.volume = 0.92;
