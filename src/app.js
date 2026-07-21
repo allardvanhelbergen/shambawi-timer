@@ -356,11 +356,14 @@ function moveToAdjacentRound(direction) {
     activeSegment?.type === "transition"
       ? activeSegment.roundNumber
       : activeSegment?.number;
-  const currentIndex = Math.max(
-    0,
-    roundSegments.findIndex((segment) => segment.number === activeRoundNumber),
+  const currentIndex = roundSegments.findIndex(
+    (segment) => segment.number === activeRoundNumber,
   );
-  const nextIndex = clamp(currentIndex + direction, 0, roundSegments.length - 1);
+  const nextIndex = currentIndex + direction;
+  if (nextIndex < 0 || nextIndex >= roundSegments.length) {
+    return;
+  }
+
   const nextSegment = roundSegments[nextIndex];
 
   setElapsed(nextSegment.startSeconds, true);
@@ -429,6 +432,8 @@ function render() {
   );
   elements.sessionElapsed.textContent = formatClock(elapsedWholeSeconds);
   elements.sessionProgress.style.width = `${sessionProgress}%`;
+  elements.nextButton.disabled =
+    currentRound?.number === roundSegments.at(-1)?.number;
 
   elements.playButton.title = state.isRunning ? "Pause" : "Start";
   elements.playButton.setAttribute(

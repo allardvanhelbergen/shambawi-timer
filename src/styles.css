@@ -650,23 +650,32 @@ body[data-phase="completed"] .app-shell {
   height: 48px;
   display: inline-grid;
   place-items: center;
-  border: 1px solid rgba(36, 79, 23, 0.28);
+  border: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.8);
-  color: var(--forest);
+  background: transparent;
+  color: rgba(36, 79, 23, 0.72);
   cursor: pointer;
   justify-self: center;
 }
 
 .icon-button:hover {
-  border-color: var(--forest);
   background: var(--panel-muted);
+  color: var(--forest);
+}
+
+.icon-button:disabled {
+  color: rgba(69, 89, 84, 0.52);
+  cursor: default;
+}
+
+.icon-button:disabled:hover {
+  background: transparent;
 }
 
 .icon-button.primary {
   width: 64px;
   height: 64px;
-  border-color: var(--forest);
+  border: 1px solid var(--forest);
   background: var(--forest);
   color: #ffffff;
 }

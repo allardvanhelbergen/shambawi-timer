@@ -306,9 +306,43 @@ test("play control is horizontally centered in an asymmetric five-slot grid", ()
   assert.match(getCssRule("#reset-button"), /height:\s*32px/);
   assert.match(getCssRule("#reset-button .fa-icon"), /width:\s*15px/);
   assert.match(getCssRule("#reset-button .fa-icon"), /height:\s*15px/);
+  assert.match(getCssRule(".icon-button"), /border:\s*0/);
+  assert.match(getCssRule(".icon-button"), /background:\s*transparent/);
+  assert.match(
+    getCssRule(".icon-button"),
+    /color:\s*rgba\(36,\s*79,\s*23,\s*0\.72\)/,
+  );
+  assert.match(
+    getCssRule(".icon-button:hover"),
+    /background:\s*var\(--panel-muted\)/,
+  );
+  assert.match(
+    getCssRule(".icon-button.primary"),
+    /border:\s*1px solid var\(--forest\)/,
+  );
   assert.match(
     getCssRule(".icon-button.primary:hover"),
     /background:\s*var\(--green-gray\)/,
+  );
+});
+
+test("next round is disabled and inert on the final round", () => {
+  assert.match(
+    appSource,
+    /elements\.nextButton\.disabled =\s*currentRound\?\.number === roundSegments\.at\(-1\)\?\.number/,
+  );
+  assert.match(
+    appSource,
+    /if \(nextIndex < 0 \|\| nextIndex >= roundSegments\.length\) \{\s+return;/,
+  );
+  assert.match(
+    getCssRule(".icon-button:disabled"),
+    /color:\s*rgba\(69,\s*89,\s*84,\s*0\.52\)/,
+  );
+  assert.match(getCssRule(".icon-button:disabled"), /cursor:\s*default/);
+  assert.match(
+    getCssRule(".icon-button:disabled:hover"),
+    /background:\s*transparent/,
   );
 });
 
