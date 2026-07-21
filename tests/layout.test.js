@@ -36,10 +36,13 @@ test("ceremony views expose only their heading and primary action", () => {
   const welcome = getMarkupBetween("welcome-view", "practice-view");
   const completed = getMarkupBetween("completed-view");
 
-  assert.match(welcome, /id="welcome-title"[^>]*tabindex="-1"[^>]*>Start Shambawi/);
   assert.match(
     welcome,
-    /id="start-practice-button"[^>]*aria-label="Start Shambawi"/,
+    /id="welcome-title"[^>]*tabindex="-1"[^>]*>Shambawi Mahamudra<br\s*\/>Kriya/,
+  );
+  assert.match(
+    welcome,
+    /id="start-practice-button"[^>]*aria-label="Start Shambawi Mahamudra Kriya"/,
   );
   assert.match(
     completed,
@@ -234,7 +237,12 @@ test("sound settings use icon-only on and off states inside the timer stage", ()
   assert.match(getCssRule(".toggles"), /top:\s*0/);
   assert.match(getCssRule(".toggles"), /right:\s*0/);
   assert.match(getCssRule(".sound-toggle"), /border:\s*0/);
+  assert.match(getCssRule(".sound-toggle"), /border-radius:\s*50%/);
   assert.match(getCssRule(".sound-toggle"), /background:\s*transparent/);
+  assert.match(
+    getCssRule(".sound-toggle:hover"),
+    /background:\s*var\(--panel-muted\)/,
+  );
   assert.match(
     getCssRule(".sound-toggle:has(input:checked)"),
     /color:\s*rgba\(36,\s*79,\s*23,\s*0\.72\)/,
@@ -288,11 +296,26 @@ test("play control is horizontally centered in an asymmetric five-slot grid", ()
     getCssRule(".controls"),
     /grid-template-columns:\s*repeat\(5,\s*48px\)/,
   );
+  assert.match(getCssRule(".controls"), /gap:\s*28px/);
   assert.match(getCssRule(".controls"), /justify-items:\s*center/);
   assert.match(getCssRule("#previous-button"), /grid-column:\s*2/);
   assert.match(getCssRule("#play-button"), /grid-column:\s*3/);
   assert.match(getCssRule("#next-button"), /grid-column:\s*4/);
   assert.match(getCssRule("#reset-button"), /grid-column:\s*5/);
+  assert.match(getCssRule("#reset-button"), /width:\s*32px/);
+  assert.match(getCssRule("#reset-button"), /height:\s*32px/);
+  assert.match(getCssRule("#reset-button .fa-icon"), /width:\s*15px/);
+  assert.match(getCssRule("#reset-button .fa-icon"), /height:\s*15px/);
+  assert.match(
+    getCssRule(".icon-button.primary:hover"),
+    /background:\s*var\(--green-gray\)/,
+  );
+});
+
+test("timer core omits round-number labels", () => {
+  assert.doesNotMatch(html, /id="round-kicker"|class="round-kicker"/);
+  assert.doesNotMatch(appSource, /roundKicker|getKicker/);
+  assert.doesNotMatch(styles, /\.round-kicker/);
 });
 
 test("announcement and next-round widgets are not rendered", () => {

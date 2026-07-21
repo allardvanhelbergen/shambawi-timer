@@ -353,14 +353,14 @@ body[data-phase="completed"] .app-shell {
   display: grid;
   place-items: center;
   border: 0;
-  border-radius: 4px;
+  border-radius: 50%;
   background: transparent;
   color: rgba(36, 79, 23, 0.72);
   cursor: pointer;
 }
 
 .sound-toggle:hover {
-  background: transparent;
+  background: var(--panel-muted);
   color: var(--forest);
 }
 
@@ -541,17 +541,8 @@ body[data-phase="completed"] .app-shell {
   text-align: center;
 }
 
-.round-kicker {
-  color: var(--forest);
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
 .timer-core h2 {
   max-width: 13ch;
-  margin-top: 12px;
   color: var(--forest);
   font-size: clamp(2rem, 4.6vw, 4rem);
   line-height: 1;
@@ -628,7 +619,7 @@ body[data-phase="completed"] .app-shell {
   align-items: center;
   justify-content: center;
   justify-items: center;
-  gap: 14px;
+  gap: 28px;
 }
 
 #previous-button {
@@ -645,6 +636,13 @@ body[data-phase="completed"] .app-shell {
 
 #reset-button {
   grid-column: 5;
+  width: 32px;
+  height: 32px;
+}
+
+#reset-button .fa-icon {
+  width: 15px;
+  height: 15px;
 }
 
 .icon-button {
@@ -671,6 +669,11 @@ body[data-phase="completed"] .app-shell {
   border-color: var(--forest);
   background: var(--forest);
   color: #ffffff;
+}
+
+.icon-button.primary:hover {
+  border-color: var(--green-gray);
+  background: var(--green-gray);
 }
 
 .icon-button .fa-icon {
@@ -890,13 +893,8 @@ body[data-phase="completed"] .app-shell {
     padding: 10px;
   }
 
-  .round-kicker {
-    font-size: 0.62rem;
-  }
-
   .timer-core h2 {
     max-width: 12ch;
-    margin-top: 5px;
     font-size: 1.15rem;
     line-height: 1;
   }
@@ -932,7 +930,7 @@ body[data-phase="completed"] .app-shell {
   .controls {
     align-self: end;
     grid-template-columns: repeat(5, 36px);
-    gap: 10px;
+    gap: 20px;
   }
 
   .icon-button {
@@ -953,6 +951,16 @@ body[data-phase="completed"] .app-shell {
   .icon-button.primary .fa-icon {
     width: 21px;
     height: 21px;
+  }
+
+  #reset-button {
+    width: 24px;
+    height: 24px;
+  }
+
+  #reset-button .fa-icon {
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -1008,7 +1016,6 @@ body[data-phase="completed"] .app-shell {
     font-size: 1.95rem;
   }
 
-  .round-kicker,
   .count-readout {
     font-size: 0.55rem;
   }
@@ -1025,6 +1032,16 @@ body[data-phase="completed"] .app-shell {
   .icon-button.primary {
     width: 40px;
     height: 40px;
+  }
+
+  #reset-button {
+    width: 21px;
+    height: 21px;
+  }
+
+  #reset-button .fa-icon {
+    width: 11px;
+    height: 11px;
   }
 }
 

@@ -30,7 +30,6 @@ const elements = {
   practiceView: document.querySelector("#practice-view"),
   previousButton: document.querySelector("#previous-button"),
   resetButton: document.querySelector("#reset-button"),
-  roundKicker: document.querySelector("#round-kicker"),
   roundList: document.querySelector("#round-list"),
   sessionElapsed: document.querySelector("#session-elapsed"),
   sessionMeta: document.querySelector("#session-meta"),
@@ -397,7 +396,6 @@ function render() {
   );
 
   elements.currentTitle.textContent = getDisplayTitle(segment);
-  elements.roundKicker.textContent = getKicker(segment, currentRound);
   elements.timeReadout.textContent = formatClock(remaining);
   elements.countReadout.textContent = getCountReadout(segment);
   elements.timerRing.style.setProperty(
@@ -468,18 +466,6 @@ function getDisplayTitle(segment) {
   }
 
   return segment.name;
-}
-
-function getKicker(segment, currentRound) {
-  if (!segment || !currentRound) {
-    return "Session";
-  }
-
-  if (segment.type === "transition") {
-    return `Round ${currentRound.number} starts next`;
-  }
-
-  return `Round ${currentRound.number}`;
 }
 
 function getCountReadout(segment) {
