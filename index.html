@@ -13,9 +13,7 @@
         <div class="ceremony-content">
           <h1 id="welcome-title" tabindex="-1">Start Shambawi</h1>
           <button class="ceremony-start-button" id="start-practice-button" type="button" aria-label="Start Shambawi">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8 5v14l11-7L8 5Z"></path>
-            </svg>
+            <span class="fa-icon fa-play" aria-hidden="true"></span>
           </button>
         </div>
         <div class="ceremony-scene" aria-hidden="true">
@@ -25,67 +23,59 @@
         </div>
       </section>
 
-      <section class="timer-panel" id="practice-view" aria-labelledby="app-title" hidden>
-        <header class="topbar">
-          <h1 id="app-title">Shambawi timer</h1>
-          <div class="toggles" aria-label="Sound settings">
-            <label class="toggle">
-              <input id="bell-toggle" type="checkbox" checked />
-              <span>Bell</span>
-            </label>
-            <label class="toggle">
-              <input id="voice-toggle" type="checkbox" checked />
-              <span>Voice</span>
-            </label>
-          </div>
-        </header>
-
+      <section class="timer-panel" id="practice-view" aria-label="Shambawi timer" hidden>
         <div class="main-grid">
-          <aside class="rounds-panel" aria-labelledby="rounds-title">
-            <div class="rounds-header">
-              <h2 id="rounds-title">Rounds</h2>
-              <p class="rounds-total" id="session-meta">Total 32:38</p>
-            </div>
+          <aside class="rounds-panel" aria-label="Practice rounds">
             <ol class="round-list" id="round-list"></ol>
           </aside>
 
           <section class="focus-panel" aria-live="polite">
-            <div class="timer-ring" id="timer-ring">
-              <div class="timer-core">
-                <span class="round-kicker" id="round-kicker">Round 1</span>
-                <h2 id="current-title" tabindex="-1">Butterfly</h2>
-                <p class="time-readout" id="time-readout">2:00</p>
-                <p class="count-readout" id="count-readout"></p>
+            <div class="timer-stage">
+              <div class="toggles" role="group" aria-label="Sound settings">
+                <label class="sound-toggle" title="Bell sounds">
+                  <input id="bell-toggle" type="checkbox" aria-label="Bell sounds" checked />
+                  <span class="fa-icon sound-icon sound-icon-on fa-bell" aria-hidden="true"></span>
+                  <span class="fa-icon sound-icon sound-icon-off fa-bell-slash" aria-hidden="true"></span>
+                </label>
+                <label class="sound-toggle" title="Voice announcements">
+                  <input id="voice-toggle" type="checkbox" aria-label="Voice announcements" checked />
+                  <span class="fa-icon sound-icon sound-icon-on fa-comment" aria-hidden="true"></span>
+                  <span class="fa-icon sound-icon sound-icon-off fa-comment-slash" aria-hidden="true"></span>
+                </label>
+              </div>
+
+              <div class="timer-ring" id="timer-ring">
+                <div class="timer-core">
+                  <span class="round-kicker" id="round-kicker">Round 1</span>
+                  <h2 id="current-title" tabindex="-1">Butterfly</h2>
+                  <p class="time-readout" id="time-readout">2:00</p>
+                  <p class="count-readout" id="count-readout"></p>
+                </div>
               </div>
             </div>
 
-            <div class="progress-track" aria-label="Session progress">
-              <span id="session-progress"></span>
+            <div class="session-progress-block">
+              <div class="session-progress-meta">
+                <p class="session-elapsed" id="session-elapsed" aria-label="Elapsed session time">0:00</p>
+                <p class="session-total" id="session-meta" aria-label="Total session time">32:38</p>
+              </div>
+              <div class="progress-track" aria-label="Session progress">
+                <span id="session-progress"></span>
+              </div>
             </div>
 
             <div class="controls" aria-label="Timer controls">
               <button class="icon-button" id="previous-button" type="button" title="Previous round" aria-label="Previous round">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M19 20 9 12l10-8v16Z"></path>
-                  <path d="M5 19V5"></path>
-                </svg>
+                <span class="fa-icon fa-backward-step" aria-hidden="true"></span>
               </button>
               <button class="icon-button primary" id="play-button" type="button" title="Start" aria-label="Start">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path id="play-icon" d="M8 5v14l11-7L8 5Z"></path>
-                </svg>
+                <span class="fa-icon fa-play" id="play-icon" aria-hidden="true"></span>
               </button>
               <button class="icon-button" id="next-button" type="button" title="Next round" aria-label="Next round">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="m5 4 10 8-10 8V4Z"></path>
-                  <path d="M19 5v14"></path>
-                </svg>
+                <span class="fa-icon fa-forward-step" aria-hidden="true"></span>
               </button>
               <button class="icon-button" id="reset-button" type="button" title="Reset" aria-label="Reset">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 7v6h6"></path>
-                  <path d="M5.6 17A8 8 0 1 0 6 6.4L4 7"></path>
-                </svg>
+                <span class="fa-icon fa-rotate-left" aria-hidden="true"></span>
               </button>
             </div>
           </section>
@@ -95,7 +85,10 @@
       <section class="ceremony-view completed-view" id="completed-view" aria-labelledby="completed-title" hidden>
         <div class="ceremony-content">
           <h1 id="completed-title" tabindex="-1">Shambawi completed</h1>
-          <button class="practice-again-button" id="practice-again-button" type="button">Practice again</button>
+          <button class="practice-again-button" id="practice-again-button" type="button">
+            <span class="fa-icon fa-rotate-left" aria-hidden="true"></span>
+            Practice again
+          </button>
         </div>
         <div class="ceremony-scene" aria-hidden="true">
           <img class="ceremony-ripples" src="./assets/still-water-ripples.png" alt="" />

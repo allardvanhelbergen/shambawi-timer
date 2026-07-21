@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const appSource = readFileSync(new URL("../src/app.js", import.meta.url), "utf8");
@@ -45,7 +45,10 @@ test("ceremony views expose only their heading and primary action", () => {
     completed,
     /id="completed-title"[^>]*tabindex="-1"[^>]*>Shambawi completed/,
   );
-  assert.match(completed, /id="practice-again-button"[^>]*>Practice again/);
+  assert.match(
+    completed,
+    /id="practice-again-button"[^>]*>[\s\S]*Practice again/,
+  );
 
   for (const ceremony of [welcome, completed]) {
     assert.doesNotMatch(ceremony, /bell-toggle|voice-toggle|round-list|timer-ring/);
@@ -72,6 +75,75 @@ test("phase rendering owns view visibility and one-click practice entry", () => 
   );
   assert.match(appSource, /animationFrameId/);
   assert.match(appSource, /cancelAnimationFrame/);
+});
+
+test("control buttons use locally vendored Font Awesome Free Solid icons", () => {
+  for (const icon of [
+    "play",
+    "pause",
+    "backward-step",
+    "forward-step",
+    "rotate-left",
+    "bell",
+    "bell-slash",
+    "comment",
+    "comment-slash",
+  ]) {
+    assert.equal(
+      existsSync(
+        new URL(`../assets/fontawesome/solid/${icon}.svg`, import.meta.url),
+      ),
+      true,
+      `${icon}.svg should be vendored locally`,
+    );
+  }
+
+  assert.equal(
+    existsSync(new URL("../assets/fontawesome/LICENSE.txt", import.meta.url)),
+    true,
+    "Font Awesome license should ship with the icons",
+  );
+
+  for (const icon of [
+    "play",
+    "backward-step",
+    "forward-step",
+    "rotate-left",
+  ]) {
+    assert.match(html, new RegExp(`class="fa-icon fa-${icon}"`));
+  }
+
+  for (const icon of [
+    "play",
+    "pause",
+    "backward-step",
+    "forward-step",
+    "rotate-left",
+    "bell",
+    "bell-slash",
+    "comment",
+    "comment-slash",
+  ]) {
+    assert.match(
+      getCssRule(`.fa-${icon}`),
+      new RegExp(
+        `--fa-icon:\\s*url\\(["']?\\.\\.\\/assets\\/fontawesome\\/solid\\/${icon}\\.svg["']?\\)`,
+      ),
+    );
+  }
+
+  assert.doesNotMatch(html, /style="--fa-icon:/);
+  assert.doesNotMatch(appSource, /style\.setProperty\(\s*"--fa-icon"/);
+  assert.match(
+    appSource,
+    /playIcon\.classList\.toggle\("fa-pause", state\.isRunning\)/,
+  );
+  assert.match(
+    appSource,
+    /playIcon\.classList\.toggle\("fa-play", !state\.isRunning\)/,
+  );
+  assert.doesNotMatch(html, /<svg\b/);
+  assert.match(getCssRule(".fa-icon"), /mask:\s*var\(--fa-icon\)/);
 });
 
 test("practice entry guards against double-clicking through to timer controls", () => {
@@ -137,11 +209,90 @@ test("round list and timer workspace are unframed", () => {
   assert.match(focusPanel, /background:\s*transparent/);
 });
 
-test("session total is presented as part of the rounds header", () => {
+test("practice workspace omits decorative headings but keeps accessible names", () => {
   assert.match(
     html,
-    /class="rounds-header"[\s\S]*id="rounds-title"[\s\S]*id="session-meta"/,
+    /id="practice-view"[^>]*aria-label="Shambawi timer"/,
   );
+  assert.match(
+    html,
+    /class="rounds-panel"[^>]*aria-label="Practice rounds"/,
+  );
+  assert.doesNotMatch(html, /id="app-title"|id="rounds-title"/);
+  assert.doesNotMatch(html, /class="topbar"|class="rounds-header"/);
+});
+
+test("sound settings use icon-only on and off states inside the timer stage", () => {
+  assert.match(
+    html,
+    /class="timer-stage"[\s\S]*class="toggles"[^>]*role="group"[^>]*aria-label="Sound settings"[\s\S]*id="bell-toggle"[^>]*aria-label="Bell sounds"[^>]*checked[\s\S]*fa-bell[\s\S]*fa-bell-slash[\s\S]*id="voice-toggle"[^>]*aria-label="Voice announcements"[^>]*checked[\s\S]*fa-comment[\s\S]*fa-comment-slash[\s\S]*id="timer-ring"/,
+  );
+  assert.doesNotMatch(html, /fa-volume-high|fa-volume-xmark/);
+  assert.doesNotMatch(html, /<span>\s*(Bell|Voice)\s*<\/span>/);
+  assert.match(getCssRule(".timer-stage"), /position:\s*relative/);
+  assert.match(getCssRule(".toggles"), /position:\s*absolute/);
+  assert.match(getCssRule(".toggles"), /top:\s*0/);
+  assert.match(getCssRule(".toggles"), /right:\s*0/);
+  assert.match(getCssRule(".sound-toggle"), /border:\s*0/);
+  assert.match(getCssRule(".sound-toggle"), /background:\s*transparent/);
+  assert.match(
+    getCssRule(".sound-toggle:has(input:checked)"),
+    /color:\s*rgba\(36,\s*79,\s*23,\s*0\.72\)/,
+  );
+  assert.match(
+    getCssRule(".sound-toggle:has(input:not(:checked))"),
+    /color:\s*rgba\(69,\s*89,\s*84,\s*0\.52\)/,
+  );
+  assert.doesNotMatch(styles, /\.sound-toggle:focus-within/);
+  assert.match(
+    getCssRule(".sound-toggle:has(input:focus-visible)"),
+    /outline:\s*2px/,
+  );
+  assert.match(
+    getCssRule(".sound-toggle input:checked ~ .sound-icon-on"),
+    /display:\s*block/,
+  );
+  assert.match(
+    getCssRule(".sound-toggle input:not(:checked) ~ .sound-icon-off"),
+    /display:\s*block/,
+  );
+  assert.match(
+    styles,
+    /@media \(max-width:\s*700px\)[\s\S]*?\.sound-toggle\s*\{[^}]*width:\s*36px;[^}]*height:\s*36px;/,
+  );
+});
+
+test("session progress shows elapsed and total time above the tracker", () => {
+  assert.match(
+    html,
+    /class="session-progress-block"[\s\S]*class="session-progress-meta"[\s\S]*id="session-elapsed"[\s\S]*id="session-meta"[\s\S]*class="progress-track"/,
+  );
+  assert.doesNotMatch(html, /id="session-meta">Total /);
+  assert.match(getCssRule(".session-progress-block"), /max-width:\s*590px/);
+  assert.match(getCssRule(".session-progress-meta"), /display:\s*flex/);
+  assert.match(
+    getCssRule(".session-progress-meta"),
+    /justify-content:\s*space-between/,
+  );
+  assert.match(appSource, /sessionElapsed:\s*document\.querySelector\("#session-elapsed"\)/);
+  assert.match(
+    appSource,
+    /elements\.sessionMeta\.textContent = formatClock\(totalDuration\)/,
+  );
+  assert.match(appSource, /elements\.sessionElapsed\.textContent = formatClock\(/);
+});
+
+test("play control is horizontally centered in an asymmetric five-slot grid", () => {
+  assert.match(getCssRule(".controls"), /display:\s*grid/);
+  assert.match(
+    getCssRule(".controls"),
+    /grid-template-columns:\s*repeat\(5,\s*48px\)/,
+  );
+  assert.match(getCssRule(".controls"), /justify-items:\s*center/);
+  assert.match(getCssRule("#previous-button"), /grid-column:\s*2/);
+  assert.match(getCssRule("#play-button"), /grid-column:\s*3/);
+  assert.match(getCssRule("#next-button"), /grid-column:\s*4/);
+  assert.match(getCssRule("#reset-button"), /grid-column:\s*5/);
 });
 
 test("announcement and next-round widgets are not rendered", () => {
@@ -225,7 +376,7 @@ test("compact mobile layout is one screen with rounds before the timer", () => {
   assert.match(styles, /\.focus-panel\s*\{[\s\S]*?order:\s*1/);
   assert.match(
     styles,
-    /@media \(max-width:\s*700px\)[\s\S]*?\.timer-ring\s*\{[^}]*align-self:\s*start;[^}]*margin-top:\s*14px;/,
+    /@media \(max-width:\s*700px\)[\s\S]*?\.timer-ring\s*\{[^}]*align-self:\s*start;[^}]*margin-top:\s*34px;/,
   );
 });
 

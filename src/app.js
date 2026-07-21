@@ -32,6 +32,7 @@ const elements = {
   resetButton: document.querySelector("#reset-button"),
   roundKicker: document.querySelector("#round-kicker"),
   roundList: document.querySelector("#round-list"),
+  sessionElapsed: document.querySelector("#session-elapsed"),
   sessionMeta: document.querySelector("#session-meta"),
   sessionProgress: document.querySelector("#session-progress"),
   timeReadout: document.querySelector("#time-readout"),
@@ -54,7 +55,7 @@ const state = {
   entryGuardTimer: 0,
 };
 
-elements.sessionMeta.textContent = `Total ${formatClock(totalDuration)}`;
+elements.sessionMeta.textContent = formatClock(totalDuration);
 
 renderRoundList();
 renderPhase();
@@ -390,6 +391,10 @@ function render() {
   const sessionProgress = totalDuration
     ? (state.elapsedSeconds / totalDuration) * 100
     : 0;
+  const elapsedWholeSeconds = Math.min(
+    totalDuration,
+    Math.floor(state.elapsedSeconds),
+  );
 
   elements.currentTitle.textContent = getDisplayTitle(segment);
   elements.roundKicker.textContent = getKicker(segment, currentRound);
@@ -399,6 +404,7 @@ function render() {
     "--segment-progress",
     `${segmentProgress * 360}deg`,
   );
+  elements.sessionElapsed.textContent = formatClock(elapsedWholeSeconds);
   elements.sessionProgress.style.width = `${sessionProgress}%`;
 
   elements.playButton.title = state.isRunning ? "Pause" : "Start";
@@ -406,10 +412,8 @@ function render() {
     "aria-label",
     state.isRunning ? "Pause" : "Start",
   );
-  elements.playIcon.setAttribute(
-    "d",
-    state.isRunning ? "M7 5h4v14H7V5Zm6 0h4v14h-4V5Z" : "M8 5v14l11-7L8 5Z",
-  );
+  elements.playIcon.classList.toggle("fa-pause", state.isRunning);
+  elements.playIcon.classList.toggle("fa-play", !state.isRunning);
 
   updateRoundList(currentRound, segment);
 }
